@@ -8,6 +8,7 @@
 # Author: Alexander Kotzeff
 # Date: Aug 12, 2023
 
+import csv
 import requests
 from bs4 import BeautifulSoup
 
@@ -48,11 +49,22 @@ def run_scrape():
     f.close()
 
 
+def find_book(book_to_find):
+    with open("Books.csv") as obj:
+        reader = csv.reader(obj, delimiter=',')
+
+        for line in reader:
+            if book_to_find in str(line):
+                print(line[1])
+
 
 if __name__ == '__main__':
     run_again = input("Would you like to run the scrape again? (Yes/No): ")
 
-    if run_again is "Yes":
+    if run_again == "Yes":
         run_scrape()
 
+    book_name = input("Please enter the name of the book you would like to search for: ")
+    find_book(book_name)
 
+    keyword = input("Please enter the word you would like to search for in the description of the book: ")
