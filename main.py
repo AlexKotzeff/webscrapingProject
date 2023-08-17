@@ -50,6 +50,8 @@ def run_catalogue_scrape():
     f.close()
 
 
+# This function takes in the book name and the keyword to be searched for in the book description. It returns the number
+# of times that word is found in the description.
 def run_book_scrape(book, word):
     url = book["Link"].values[0]
     req = requests.get(url)
@@ -57,7 +59,6 @@ def run_book_scrape(book, word):
 
     description = soup.find_all('p')[3].get_text().strip()
     return description.count(word)
-
 
 
 # This function moves through the csv of books to try and find what the user is looking for. It uses the pandas library
@@ -69,6 +70,8 @@ def find_in_csv(book_to_find):
     return found
 
 
+# This function handles reading in the book name from the user and checking if it is in the books to scrape catalogue.
+# It can call itself to help the user specify the book title if there are none or several findings.
 def user_book_input():
     book_name = input("\nPlease enter the name of the book you would like to search for: ")
 
