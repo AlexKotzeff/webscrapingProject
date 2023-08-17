@@ -22,7 +22,7 @@ def run_catalogue_scrape():
     # Create a csv file to save all the books to.
     file = "Books.csv"
     f = open(file, "w")
-    headers = "Book title, Link\n"
+    headers = "Book title,Link\n"
     f.write(headers)
 
     # Since there are multiple pages containing the books, we will need to use a pointer named "this_page" to extract
@@ -50,9 +50,15 @@ def run_catalogue_scrape():
     f.close()
 
 
-def run_book_scrape(book):
-    url = book.title
-    print(url)
+def run_book_scrape(book, word):
+    url = book["Link"].values[0]
+    req = requests.get(url)
+    soup = BeautifulSoup(req.content, "html.parser")
+
+    description = soup.find_all('p')[3].get_text().strip()
+    return description.count(word)
+
+
 
 # This function moves through the csv of books to try and find what the user is looking for. It uses the pandas library
 # for speed and simplicity.
@@ -83,20 +89,17 @@ def user_book_input():
     return found
 
 
-
 if __name__ == '__main__':
     # Check if the user wants to refresh the scrape since last time.
     run_again = input("Would you like to run the scrape again? (Yes/No): ")
-    if run_again == "Yes":
+    if run_again.casefold() == "yes":
         run_catalogue_scrape()
 
     # Get the book from the user and check if it is in the catalogue
     book_info = user_book_input()
 
-    run_book_scrape(book_info)
-
-
-
     keyword = input("Please enter the word you would like to search for in the description of the book: ")
 
+    word_count = run_book_scrape(book_info, keyword)
 
+    print(f"\nThe word \"{keyword}\" was found {word_count} times in the product description.")
